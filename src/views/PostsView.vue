@@ -152,6 +152,7 @@
               accept="image/*"
               @change="onSelectImage($event)"
               class="form-control"
+              ref="fileInput"
               type="file"
               name="postImage"
             />
@@ -214,6 +215,8 @@
               accept="image/*"
               @change="onSelectImage($event)"
               class="form-control"
+              ref="fileInput"
+
               type="file"
               name="postImage"
             />
@@ -243,6 +246,7 @@
             >
               Update
             </button>
+            
           </div>
         </form>
       </div>
@@ -388,6 +392,8 @@ export default {
             this.getPosts();
             this.toastrMessage = 'Post updated successfully'
             this.toastrType = 'alert-success'
+            this.$refs.fileInput.value = '';
+
           }
         })
         .catch((errorPost) => {
@@ -420,6 +426,8 @@ export default {
             this.getPosts();
             this.toastrMessage = 'Post Created successfully'
             this.toastrType = 'alert-success'
+            let postImage = document.querySelector('#postImage')
+            postImage.value = ''
 
           }
         })

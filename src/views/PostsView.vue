@@ -355,7 +355,7 @@ export default {
 
 
       axios.post(
-        `https://task.astra-tech.net/fronendtask/public/api/deletepost`,
+        `${import.meta.env.VITE_APP_API_KEY}/api/deletepost`,
         {id: this.clickActionId}).then((responsePost) => {
         console.log('response in delete' , responsePost)
         this.activeModalDelete = false
@@ -378,7 +378,7 @@ export default {
       }
       axios
         .post(
-          `https://task.astra-tech.net/fronendtask/public/api/updatepost`,
+          `${import.meta.env.VITE_APP_API_KEY}/api/updatepost`,
           formData
         )
         .then((postData) => {
@@ -412,7 +412,7 @@ export default {
 
       axios
         .post(
-          `https://task.astra-tech.net/fronendtask/public/api/create`,
+          `${import.meta.env.VITE_APP_API_KEY}/api/create`,
           formData
         )
         .then((postData) => {
@@ -438,7 +438,7 @@ export default {
 
     getPosts() {
       axios
-        .get(`https://task.astra-tech.net/fronendtask/public/api/getposts`)
+        .get(`${import.meta.env.VITE_APP_API_KEY}/api/getposts`)
         .then((postsData) => {
           console.log(postsData);
           this.posts = postsData.data;

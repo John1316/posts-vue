@@ -55,8 +55,8 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Post description</th>
-              <th>Post name</th>
+              <th>Post message</th>
+              <th>Post title</th>
               <th>Post Image</th>
               <th>Action</th>
             </tr>
@@ -81,14 +81,13 @@
                   type="button">
                     <img src="../assets/edit.svg" alt="" />
                   </button>
-                  <b-button
-                    ref="btnDelete"
+                  <button
                     class="action_button btn btn-danger"
                     @click="deleteBtn(post.id)"
                     type="button"
                   >
                     <img src="../assets/trash.svg" alt="" />
-                  </b-button>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -101,28 +100,6 @@
         <h3 class="text-center">No data is here</h3>
       </div>
     </div>
-    <div
-      id="my-modal"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="my-modal-title"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="my-modal-title">Title</h5>
-            <button class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Content</p>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="modal-component" :class="{ 'show-modal': activeModalCreate }">
       
@@ -132,17 +109,17 @@
         <hr />
         <form @submit.prevent="onCreate">
           <div class="form-group mb-3">
-            <label for="post_name">Post name</label>
+            <label for="post_title">Post Title</label>
             <input
-              id="post_name"
-              v-model="post_name"
+              id="post_title"
+              v-model="post_title"
               class="form-control"
               type="text"
-              name="post_name"
-              @blur="touchField('post_name')"
+              name="post_title"
+              @blur="touchField('post_title')"
             />
-            <div v-if="validation.post_name.$error">
-              {{ validation.post_name.$errors[0].$message }}
+            <div class="text-danger" v-if="validation.post_title.$error">
+              {{ validation.post_title.$errors[0].$message }}
             </div>
           </div>
           <div class="form-group mb-3">
@@ -155,23 +132,24 @@
               ref="fileInput"
               type="file"
               name="postImage"
+
             />
-            <!-- <div v-if="validation.post_image.$error">
-          {{validation.post_image.$errors[0].$message}}
-          </div> -->
+            <div class="text-danger" v-if="errorImage">
+          {{errorImage}}
+          </div>
           </div>
           <div class="form-group mb-3">
-            <label for="post_description">Post Description</label>
+            <label for="post_message">Post Message</label>
             <textarea
-              id="post_description"
-              v-model="post_description"
+              id="post_message"
+              v-model="post_message"
               class="form-control"
               type="text"
-              name="post_description"
-              @blur="touchField('post_description')"
+              name="post_message"
+              @blur="touchField('post_message')"
             ></textarea>
-            <div v-if="validation.post_description.$error">
-              {{ validation.post_description.$errors[0].$message }}
+            <div class="text-danger" v-if="validation.post_message.$error">
+              {{ validation.post_message.$errors[0].$message }}
             </div>
           </div>
           <div class="form-group mb-3">
@@ -195,47 +173,43 @@
         <hr />
         <form @submit.prevent="onUpdate">
           <div class="form-group mb-3">
-            <label for="post_name">Post name</label>
+            <label for="post_title">Post Title</label>
             <input
-              id="post_name"
-              v-model="post_name"
+              id="post_title"
+              v-model="post_title"
               class="form-control"
               type="text"
-              name="post_name"
-              @blur="touchField('post_name')"
+              name="post_title"
+              @blur="touchField('post_title')"
             />
-            <div v-if="validation.post_name.$error">
-              {{ validation.post_name.$errors[0].$message }}
+            <div class="text-danger" v-if="validation.post_title.$error">
+              {{ validation.post_title.$errors[0].$message }}
             </div>
           </div>
           <div class="form-group mb-3">
-            <label for="postImage">Post Image</label>
+            <label for="postImageUpdate">Post Image</label>
             <input
-              id="postImage"
+              id="postImageUpdate"
               accept="image/*"
               @change="onSelectImage($event)"
               class="form-control"
-              ref="fileInput"
-
               type="file"
               name="postImage"
+              ref="fileInput"
             />
-            <!-- <div v-if="validation.post_image.$error">
-          {{validation.post_image.$errors[0].$message}}
-          </div> -->
           </div>
           <div class="form-group mb-3">
-            <label for="post_description">Post Description</label>
+            <label for="post_message">Post Message</label>
             <textarea
-              id="post_description"
-              v-model="post_description"
+              id="post_message"
+              v-model="post_message"
               class="form-control"
               type="text"
-              name="post_description"
-              @blur="touchField('post_description')"
+              name="post_message"
+              @blur="touchField('post_message')"
             ></textarea>
-            <div v-if="validation.post_description.$error">
-              {{ validation.post_description.$errors[0].$message }}
+            <div class="text-danger" v-if="validation.post_message.$error">
+              {{ validation.post_message.$errors[0].$message }}
             </div>
           </div>
           <div class="form-group mb-3">
@@ -277,9 +251,9 @@ export default {
   data() {
     return {
       validation: useVuelidate(),
-      post_name: null,
+      post_title: null,
       post_image: null,
-      post_description: null,
+      post_message: null,
       searchQuery: null,
       posts: [],
       resultPosts: [],
@@ -288,7 +262,9 @@ export default {
       activeUpdateModal: false,
       clickActionId: null,
       toastrMessage:null,
-      toastrType: null    
+      toastrType: null,
+      errorImage: null,
+
     };
   },
   created() {
@@ -304,7 +280,11 @@ export default {
       console.log("on change image", event.target.files[0]);
       let image = event.target.files[0];
       this.post_image = image;
+      if(image !== undefined || image === null ){
+        this.errorImage = null
+      }
     },
+
     performSearch() {
       if(this.searchQuery !== '' || this.searchQuery !== null){
         this.resultPosts = this.posts.filter((item) =>
@@ -316,22 +296,42 @@ export default {
         this.resultPosts = this.posts;
       }
     },
+
+    resetInputs(){
+      this.post_title = null;
+      this.post_message = null;
+      this.post_image = null;
+      let postImage = document.querySelector('#postImage')
+      postImage.value = ''
+
+    },
+    onApiCall(toastrMessage, toastrType){
+      this.toastrMessage = toastrMessage
+      this.toastrType = toastrType;
+      this.getPosts();
+      this.resetInputs()
+    },
+
+
     OpenCreateModal(){
       this.activeModalCreate = true
     },
     closeCreateModal(){
       this.activeModalCreate = false
-      this.post_name = "";
-      this.post_description = "";
-      this.post_image = "";
+
       this.validation.$reset();
+      this.resetInputs()
+      this.errorImage = null
+
+
     },
     closeUpdateModal(){
       this.activeUpdateModal = false
-      this.post_name = "";
-      this.post_description = "";
-      this.post_image = "";
       this.validation.$reset();
+      this.resetInputs()
+      let postImageUpdate = document.querySelector('#postImageUpdate')
+      postImageUpdate.value = ''
+
     },
     closeDeleteModal(){
       this.activeModalDelete = false
@@ -346,33 +346,32 @@ export default {
       console.log("post object", post);
       this.activeUpdateModal = true;
       this.clickActionId = post.id
-      this.post_name = post.post_title
-      this.post_description = post.post_message
+      this.post_title = post.post_title
+      this.post_message = post.post_message
       
     },
     onDeletePost(){
       console.log(this.clickActionId)
-
-
       axios.post(
         `${import.meta.env.VITE_APP_API_KEY}/api/deletepost`,
         {id: this.clickActionId}).then((responsePost) => {
         console.log('response in delete' , responsePost)
         this.activeModalDelete = false
-        this.getPosts()
-        this.toastrMessage = 'Post deleted successfully'
-            this.toastrType = 'alert-danger'
+        // this.getPosts()
+        // this.toastrMessage = 'Post deleted successfully'
+        //     this.toastrType = 'alert-danger'
+        this.onApiCall('Post deleted successfully' , 'alert-danger')
       }).catch((responseError) => {
         console.log('error in delete' , responseError)
       })
     },
 
     onUpdate(){
-      console.log('onUpdate ==>',this.post_name, this.post_description, this.post_image , this.clickActionId);
+      console.log('onUpdate ==>',this.post_title, this.post_message, this.post_image , this.clickActionId);
       const formData = new FormData();
       formData.append("id", this.clickActionId);
-      formData.append("post_title", this.post_name);
-      formData.append("post_message", this.post_description);
+      formData.append("post_title", this.post_title);
+      formData.append("post_message", this.post_message);
       if(this.post_image !== null){
         formData.append("post_image", this.post_image);
       }
@@ -384,15 +383,16 @@ export default {
         .then((postData) => {
           console.log("posted successfuly", postData);
           if (postData.data === "Done") {
-            this.post_name = null;
-            this.post_description = null;
-            this.post_image = null;
+            let postImage = document.querySelector('#postImage')
+            postImage.value = ''
+            
             this.activeUpdateModal = false
+            this.onApiCall('Post updated successfully' , 'alert-success')
             this.validation.$reset();
-            this.getPosts();
-            this.toastrMessage = 'Post updated successfully'
-            this.toastrType = 'alert-success'
-            this.$refs.fileInput.value = '';
+            // this.getPosts();
+            // this.toastrMessage = 'Post updated successfully'
+            // this.toastrType = 'alert-success'
+
 
           }
         })
@@ -404,36 +404,44 @@ export default {
 
     onCreate(event) {
       console.log("submittt -->", event);
-      console.log(this.post_name, this.post_description, this.post_image);
+      console.log(this.post_title, this.post_message, this.post_image);
       const formData = new FormData();
-      formData.append("post_title", this.post_name);
-      formData.append("post_message", this.post_description);
+      formData.append("post_title", this.post_title);
+      formData.append("post_message", this.post_message);
       formData.append("post_image", this.post_image);
+      if(this.post_image === undefined || this.post_image === null){
+        this.errorImage = 'Image canot be empty in create'
 
-      axios
-        .post(
-          `${import.meta.env.VITE_APP_API_KEY}/api/create`,
-          formData
-        )
-        .then((postData) => {
-          console.log("posted successfuly", postData);
-          if (postData.data === "Done") {
-            this.post_name = null;
-            this.post_description = null;
-            this.post_image = null;
-            this.activeModalCreate = false
-            this.validation.$reset();
-            this.getPosts();
-            this.toastrMessage = 'Post Created successfully'
-            this.toastrType = 'alert-success'
-            let postImage = document.querySelector('#postImage')
-            postImage.value = ''
+      }else{
 
-          }
-        })
-        .catch((errorPost) => {
-          console.log("posted error", errorPost);
-        });
+        axios
+          .post(
+            `${import.meta.env.VITE_APP_API_KEY}/api/create`,
+            formData
+          )
+          .then((postData) => {
+            console.log("posted successfuly", postData);
+            if (postData.data === "Done") {
+              // this.post_name = null;
+              // this.post_description = null;
+              // this.post_image = null;
+              // this.getPosts();
+              // this.toastrMessage = 'Post Created successfully'
+              // this.toastrType = 'alert-success'
+              this.activeModalCreate = false
+              this.validation.$reset();
+              this.errorImage = null
+
+              this.onApiCall('Post Created successfully' , 'alert-success')
+  
+  
+  
+            }
+          })
+          .catch((errorPost) => {
+            console.log("posted error", errorPost);
+          });
+      }
     },
 
     getPosts() {
@@ -450,8 +458,8 @@ export default {
   },
   validations() {
     return {
-      post_name: { required, minLength: minLength(3) },
-      post_description: { required, minLength: minLength(3) },
+      post_title: { required, minLength: minLength(3) },
+      post_message: { required, minLength: minLength(3) },
     };
   },
 };

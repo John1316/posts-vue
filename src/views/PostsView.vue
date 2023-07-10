@@ -67,23 +67,31 @@
               <td>{{ post.post_message }}</td>
               <td>{{ post.post_title }}</td>
               <td>
-                <img
-                  :src="post.post_image"
-                  width="50"
-                  height="50"
-                  :alt="post.post_title"
-                />
+                <button
+                :aria-label="`view-image${id}}`" class="action_button btn btn-info"
+                  width="50px"
+                    height="50px"
+                  @click="viewImage(post.post_image)"
+                  type="button">
+                    <img src="../assets/search_icon.png" alt="" />
+                </button>
               </td>
               <td>
                 <div class="d-flex">
-                  <button class="action_button btn btn-info"
+                  <button 
+                  :aria-label="`update-button${id}}`" class="action_button btn btn-info"
+                  width="50px"
+                    height="50px"
                   @click="updateBtn(post)"
                   type="button">
                     <img src="../assets/edit.svg" alt="" />
                   </button>
                   <button
+                  :aria-label="`delete-button${id}}`"
                     class="action_button btn btn-danger"
                     @click="deleteBtn(post.id)"
+                    width="50px"
+                    height="50px"
                     type="button"
                   >
                     <img src="../assets/trash.svg" alt="" />
@@ -164,7 +172,23 @@
         </form>
       </div>
     </div>
+    <div class="modal-component" :class="{ 'show-modal': activeViewImageModal }">
+      
+      <div class="modal-content">
+        <span class="close-button" @click="closeViewImageModal">&times;</span>
+        <h5 class="modal-title" id="my-modal-title">View image</h5>
+        <hr />
+        <picture>
+          <img
+          class="image_modal"
+          :src="post_image_modal"
 
+          :sizes="'(max-width: 768px) 100vw, 50vw'"
+          :alt="'image_post'"
+          />
+        </picture>
+      </div>
+    </div>
     <div class="modal-component" :class="{ 'show-modal': activeUpdateModal }">
       
       <div class="modal-content">
@@ -173,9 +197,9 @@
         <hr />
         <form @submit.prevent="onUpdate">
           <div class="form-group mb-3">
-            <label for="post_title">Post Title</label>
+            <label for="update_post_title">Post Title</label>
             <input
-              id="post_title"
+              id="update_post_title"
               v-model="post_title"
               class="form-control"
               type="text"
@@ -199,9 +223,9 @@
             />
           </div>
           <div class="form-group mb-3">
-            <label for="post_message">Post Message</label>
+            <label for="update_post_message">Post Message</label>
             <textarea
-              id="post_message"
+              id="update_post_message"
               v-model="post_message"
               class="form-control"
               type="text"
@@ -256,15 +280,17 @@ export default {
       post_message: null,
       searchQuery: null,
       posts: [],
+
       resultPosts: [],
       activeModalDelete: false,
       activeModalCreate: false,
       activeUpdateModal: false,
+      activeViewImageModal: false,
       clickActionId: null,
       toastrMessage:null,
       toastrType: null,
       errorImage: null,
-
+      post_image_modal: null
     };
   },
   created() {
@@ -284,7 +310,14 @@ export default {
         this.errorImage = null
       }
     },
-
+    viewImage(image){
+      this.activeViewImageModal = true;
+      this.post_image_modal = image;
+    },
+    closeViewImageModal(){
+      this.activeViewImageModal = false;
+      this.post_image_modal = null;
+    },
     performSearch() {
       if(this.searchQuery !== '' || this.searchQuery !== null){
         this.resultPosts = this.posts.filter((item) =>
